@@ -1,0 +1,11 @@
+<Project>
+  <ItemGroup>
+    <!-- NOTE: F# dependencies. -->
+    <PackageReference Include="FSharp.Core" />
+    <!-- NOTE: PowerShell dependencies. -->
+    <PackageReference Include="Microsoft.PowerShell.SDK">
+      <ExcludeAssets>contentFiles</ExcludeAssets>
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+</Project>

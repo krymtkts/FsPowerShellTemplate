@@ -1,0 +1,12 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- NOTE: F# dependencies. -->
+    <PackageVersion Include="FSharp.Core" Version="10.0.102" />
+    <!-- NOTE: PowerShell dependencies. Feedback Provider requires PowerShell SDK version 7.4.x. -->
+    <PackageVersion Include="Microsoft.PowerShell.SDK" Version="7.4.13" />
+  </ItemGroup>
+</Project>
