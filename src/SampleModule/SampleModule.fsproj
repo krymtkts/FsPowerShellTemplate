@@ -6,10 +6,15 @@
     <Copyright>Copyright © 2026 Takatoshi Kuriyama. All rights reserved.</Copyright>
 
     <TargetFramework>net8.0</TargetFramework>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
 
     <!-- Deploy the produced assembly -->
     <PublishDir>../../publish/SampleModule</PublishDir>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <!-- Disable PDB generation for the Release build -->
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>None</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
