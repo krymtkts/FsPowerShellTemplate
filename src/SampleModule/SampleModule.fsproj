@@ -11,6 +11,11 @@
 
   <ItemGroup>
     <Compile Include="Cmdlet.fs" />
+
+    <Content Include="SampleModule.psd1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
