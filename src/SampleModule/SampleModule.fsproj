@@ -20,6 +20,7 @@
   <ItemGroup>
     <Compile Include="Predictor.fs" />
     <Compile Include="Cmdlet.fs" />
+    <Compile Include="Init.fs" />
 
     <Content Include="SampleModule.psd1">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -2,8 +2,6 @@
 
 open System
 open System.Collections.Generic
-open System.Management.Automation
-open System.Management.Automation.Subsystem
 open System.Management.Automation.Subsystem.Prediction
 open System.Threading
 
@@ -45,16 +43,3 @@ type GreetingPredictor(guid: string) =
         member __.OnCommandLineAccepted(client: PredictionClient, history: IReadOnlyList<string>) : unit = ()
 
         member __.OnCommandLineExecuted(client: PredictionClient, commandLine: string, success: bool) : unit = ()
-
-type Init() =
-    [<Literal>]
-    let identifier = "394e28cb-7f3f-4ef9-ab73-8172763ba4ac"
-
-    interface IModuleAssemblyInitializer with
-        member __.OnImport() =
-            let p = new GreetingPredictor(identifier)
-            SubsystemManager.RegisterSubsystem(SubsystemKind.CommandPredictor, p)
-
-    interface IModuleAssemblyCleanup with
-        member __.OnRemove(psModuleInfo: PSModuleInfo) =
-            SubsystemManager.UnregisterSubsystem(SubsystemKind.CommandPredictor, Guid(identifier))
