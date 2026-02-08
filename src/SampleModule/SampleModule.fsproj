@@ -18,6 +18,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Predictor.fs" />
     <Compile Include="Cmdlet.fs" />
 
     <Content Include="SampleModule.psd1">
