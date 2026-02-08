@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <Compile Include="Predictor.fs" />
+    <Compile Include="FeedbackProvider.fs" />
     <Compile Include="Cmdlet.fs" />
     <Compile Include="Init.fs" />
 

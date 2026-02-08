@@ -12,7 +12,11 @@ type Init() =
         member __.OnImport() =
             let p = new GreetingPredictor(identifier)
             SubsystemManager.RegisterSubsystem(SubsystemKind.CommandPredictor, p)
+            let f = new GreetingFeedbackProvider(identifier)
+            SubsystemManager.RegisterSubsystem(SubsystemKind.FeedbackProvider, f)
 
     interface IModuleAssemblyCleanup with
         member __.OnRemove(psModuleInfo: PSModuleInfo) =
-            SubsystemManager.UnregisterSubsystem(SubsystemKind.CommandPredictor, Guid.Parse(identifier))
+            let guid = identifier |> Guid.Parse
+            SubsystemManager.UnregisterSubsystem(SubsystemKind.CommandPredictor, guid)
+            SubsystemManager.UnregisterSubsystem(SubsystemKind.FeedbackProvider, guid)
