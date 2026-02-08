@@ -8,11 +8,12 @@ This repository supports two use cases:
 2. (Planned) Packaged and published as a [NuGet template package](https://learn.microsoft.com/en-us/dotnet/core/tutorials/cli-templates-create-template-package).
    Once available, users can run `dotnet new ...` to scaffold a new F# PowerShell module project.
 
-## Status
+## Features
 
 - [x] A sample cmdlet implemented in F#: `Get-Greeting`
-- [ ] Command-line predictor
-- [ ] Feedback Provider
+- [x] Command-line predictor
+- [x] Feedback Provider
+- [ ] Shared state across Cmdlet, Command-line predictor and Feedback Provider
 - [x] Linter and formatter with [Fantomas](https://github.com/fsprojects/fantomas) + [FSharp.Analyzers.SDK](https://github.com/ionide/FSharp.Analyzers.SDK)
 - [ ] Unit tests with [Expecto](https://github.com/haf/expecto) + [FsCheck](https://github.com/fscheck/FsCheck)
 - [ ] End-to-end tests for cmdlets with [Pester](https://github.com/pester/Pester)
@@ -21,8 +22,16 @@ This repository supports two use cases:
 
 ## Requirements
 
-- .NET SDK as specified in [`global.json`](./global.json) (this repository pins .NET SDK 10)
-- PowerShell 7.4+ (Feedback Provider requires 7.4)
+- General
+   - .NET SDK as specified in [`global.json`](./global.json) (this repository pins .NET SDK 10)
+- [Command-line predictor](https://learn.microsoft.com/en-us/powershell/scripting/dev-cross-plat/create-cmdline-predictor)
+   - PowerShell 7.2+
+   - PSReadLine 2.2.2+
+   - .NET 8 SDK 6.0.0+ (for PowerShell 7.2)
+- [Feedback Provider](https://learn.microsoft.com/en-us/powershell/scripting/dev-cross-plat/create-feedback-provider)
+   - PowerShell 7.4+
+   - Enable the `PSFeedbackProvider` experimental feature
+   - .NET 8 SDK 8.0.0+ (for PowerShell 7.4)
 
 ## License
 
