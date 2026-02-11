@@ -3,6 +3,7 @@
 open System
 open System.Collections.Generic
 open System.Management.Automation.Subsystem.Prediction
+open System.Text.RegularExpressions
 open System.Threading
 
 open SampleModule.Core
@@ -10,11 +11,21 @@ open SampleModule.Core
 type GreetingPredictor(guid: string) =
     let id = guid |> Guid.Parse
 
+    let mutable miniSessionId = 0
+
     [<Literal>]
     let name = "Greeting"
 
     [<Literal>]
     let description = "A predictor that suggests a greeting based on the input."
+
+    [<Literal>]
+    let suggestionPart1 = "'Hello "
+
+    [<Literal>]
+    let suggestionPart2 = ", PowerShell from F#!'"
+
+    let greetingPattern = Regex($"^{suggestionPart1}(?<removal>.+){suggestionPart2}$")
 
     interface ICommandPredictor with
         member __.Id = id
@@ -24,28 +35,46 @@ type GreetingPredictor(guid: string) =
         member __.GetSuggestion
             (client: PredictionClient, context: PredictionContext, cancellationToken: CancellationToken)
             : SuggestionPackage =
-            context.InputAst.Extent.Text
-            |> function
-                // NOTE: suggestionEntries requires non-empty by Requires.NotNullOrEmpty.
-                // https://github.com/PowerShell/PowerShell/blob/eef334de1b0f648512859bd032356f9c8df7cb91/src/System.Management.Automation/engine/Subsystem/PredictionSubsystem/ICommandPredictor.cs#L278
-                | input when input |> String.IsNullOrWhiteSpace -> Seq.empty
-                | input ->
-                    greetingStore.Get()
-                    |> Seq.choose (fun name ->
-                        if name.Contains(input, StringComparison.OrdinalIgnoreCase) then
-                            PredictiveSuggestion($"'Hello {name}, PowerShell from F#!", "A friendly greeting from F#'")
-                            |> Some
-                        else
-                            None)
-            |> Linq.Enumerable.ToList
-            |> SuggestionPackage
 
-        member __.CanAcceptFeedback(client: PredictionClient, feedback: PredictorFeedbackKind) : bool = false
+            let suggestions =
+                context.InputAst.Extent.Text
+                |> function
+                    // NOTE: suggestionEntries requires non-empty by Requires.NotNullOrEmpty.
+                    // https://github.com/PowerShell/PowerShell/blob/eef334de1b0f648512859bd032356f9c8df7cb91/src/System.Management.Automation/engine/Subsystem/PredictionSubsystem/ICommandPredictor.cs#L278
+                    | input when input |> String.IsNullOrWhiteSpace -> Seq.empty
+                    | input ->
+                        greetingStore.Get()
+                        |> Seq.choose (fun name ->
+                            if name.Contains(input, StringComparison.OrdinalIgnoreCase) then
+                                PredictiveSuggestion(
+                                    $"{suggestionPart1}{name}{suggestionPart2}",
+                                    "A friendly greeting from F#'"
+                                )
+                                |> Some
+                            else
+                                None)
+                |> Linq.Enumerable.ToList
+
+            // NOTE: empty suggestionEntries is rejected by PowerShell's internal validation.
+            if suggestions.Count = 0 then
+                Unchecked.defaultof<SuggestionPackage>
+            else
+                // NOTE: SuggestionPackage must include a mini-session id; PowerShell uses it when calling OnSuggestionDisplayed/OnSuggestionAccepted.
+                let session = Threading.Interlocked.Increment(&miniSessionId) |> uint32
+                SuggestionPackage(session, suggestions)
+
+        member __.CanAcceptFeedback(client: PredictionClient, feedback: PredictorFeedbackKind) : bool =
+            // NOTE: to capture events, must be return true for expected feedback kinds.
+            feedback = PredictorFeedbackKind.SuggestionAccepted
 
         member __.OnSuggestionDisplayed(client: PredictionClient, session: uint32, countOrIndex: int) : unit = ()
 
         member __.OnSuggestionAccepted(client: PredictionClient, session: uint32, acceptedSuggestion: string) : unit =
-            ()
+            let matches = acceptedSuggestion |> greetingPattern.Match
+
+            if matches.Captures.Count = 1 then
+                let removal = matches.Groups.["removal"].Value
+                removal |> greetingStore.Remove
 
         member __.OnCommandLineAccepted(client: PredictionClient, history: IReadOnlyList<string>) : unit = ()
 

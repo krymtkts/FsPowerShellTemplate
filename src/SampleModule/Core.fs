@@ -10,4 +10,6 @@ module Core =
 
         member __.Get() = names :> seq<string>
 
+        member __.Remove(name: string) = names.Remove(name) |> ignore
+
     let greetingStore = GreetingStore()
