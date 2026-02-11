@@ -5,7 +5,6 @@ open System.Management.Automation
 open SampleModule.Core
 
 [<Cmdlet(VerbsCommon.Add, "Greeting")>]
-[<OutputType(typeof<string>)>]
 type AddGreetingCommand() =
     inherit Cmdlet()
 
