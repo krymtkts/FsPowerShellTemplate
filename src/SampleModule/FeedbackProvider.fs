@@ -4,6 +4,8 @@ open System
 open System.Collections
 open System.Management.Automation.Subsystem.Feedback
 
+open SampleModule.Core
+
 type GreetingFeedbackProvider(guid: string) =
     let id = guid |> Guid.Parse
 
@@ -26,7 +28,8 @@ type GreetingFeedbackProvider(guid: string) =
 
             FeedbackItem(
                 header,
-                [ "Was the greeting helpful?"; "Did you like the style of the greeting?" ]
+                [ $"You have {greetingStore.Get() |> Seq.length} greetings stored."
+                  "Thank you for using the Greeting Predictor!" ]
                 |> Generic.List<string>,
                 "Feedback for the Greeting Predictor",
                 FeedbackDisplayLayout.Portrait

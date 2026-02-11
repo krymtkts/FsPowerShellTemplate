@@ -5,6 +5,8 @@ open System.Collections.Generic
 open System.Management.Automation.Subsystem.Prediction
 open System.Threading
 
+open SampleModule.Core
+
 type GreetingPredictor(guid: string) =
     let id = guid |> Guid.Parse
 
@@ -26,10 +28,15 @@ type GreetingPredictor(guid: string) =
             |> function
                 // NOTE: suggestionEntries requires non-empty by Requires.NotNullOrEmpty.
                 // https://github.com/PowerShell/PowerShell/blob/eef334de1b0f648512859bd032356f9c8df7cb91/src/System.Management.Automation/engine/Subsystem/PredictionSubsystem/ICommandPredictor.cs#L278
-                | input when input |> String.IsNullOrWhiteSpace -> List.Empty
+                | input when input |> String.IsNullOrWhiteSpace -> Seq.empty
                 | input ->
-                    [ ($"'Hello {input}, PowerShell from F#!", "A friendly greeting from F#'")
-                      |> PredictiveSuggestion ]
+                    greetingStore.Get()
+                    |> Seq.choose (fun name ->
+                        if name.Contains(input, StringComparison.OrdinalIgnoreCase) then
+                            PredictiveSuggestion($"'Hello {name}, PowerShell from F#!", "A friendly greeting from F#'")
+                            |> Some
+                        else
+                            None)
             |> Linq.Enumerable.ToList
             |> SuggestionPackage
 

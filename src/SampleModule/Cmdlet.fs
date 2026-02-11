@@ -2,9 +2,11 @@ namespace SampleModule
 
 open System.Management.Automation
 
-[<Cmdlet(VerbsCommon.Get, "Greeting")>]
+open SampleModule.Core
+
+[<Cmdlet(VerbsCommon.Add, "Greeting")>]
 [<OutputType(typeof<string>)>]
-type GetGreetingCommand() =
+type AddGreetingCommand() =
     inherit Cmdlet()
 
     [<Parameter(Position = 0,
@@ -16,7 +18,18 @@ type GetGreetingCommand() =
 
     override __.BeginProcessing() = ()
 
+    override __.ProcessRecord() : unit = __.Name |> greetingStore.Add
+
+    override __.EndProcessing() = ()
+
+[<Cmdlet(VerbsCommon.Get, "Greeting")>]
+[<OutputType(typeof<string>)>]
+type GetGreetingCommand() =
+    inherit Cmdlet()
+
+    override __.BeginProcessing() = ()
+
     override __.ProcessRecord() : unit =
-        $"Hello {__.Name}, PowerShell from F#!" |> __.WriteObject
+        greetingStore.Get() |> Seq.iter __.WriteObject
 
     override __.EndProcessing() = ()
