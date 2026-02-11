@@ -24,13 +24,18 @@ type GreetingFeedbackProvider(guid: string) =
         member __.Trigger: FeedbackTrigger = FeedbackTrigger.Success
 
         member __.GetFeedback(context: FeedbackContext, token: Threading.CancellationToken) : FeedbackItem | null =
-            let header = "Greeting Feedback"
+            // NOTE: Provide feedback only when there is an update.
+            // NOTE: Using the greeting store directly here for simplicity and context does not provide suggestion acceptance status.
+            if greetingStore.ConsumeUpdated() then
+                let header = "Greeting Feedback"
 
-            FeedbackItem(
-                header,
-                [ $"You have {greetingStore.Get() |> Seq.length} greetings stored."
-                  "Thank you for using the Greeting Predictor!" ]
-                |> Generic.List<string>,
-                "Feedback for the Greeting Predictor",
-                FeedbackDisplayLayout.Portrait
-            )
+                FeedbackItem(
+                    header,
+                    [ $"You have {greetingStore.Count()} greetings stored."
+                      "Thank you for using the Greeting Predictor!" ]
+                    |> Generic.List<string>,
+                    "Feedback for the Greeting Predictor",
+                    FeedbackDisplayLayout.Portrait
+                )
+            else
+                null
