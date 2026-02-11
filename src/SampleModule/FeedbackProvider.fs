@@ -10,7 +10,7 @@ type GreetingFeedbackProvider(guid: string) =
     let id = guid |> Guid.Parse
 
     [<Literal>]
-    let name = "Greeting"
+    let feedbackProviderName = "Greeting"
 
     [<Literal>]
     let description =
@@ -18,7 +18,7 @@ type GreetingFeedbackProvider(guid: string) =
 
     interface IFeedbackProvider with
         member __.Id = id
-        member __.Name = name
+        member __.Name = feedbackProviderName
         member __.Description = description
         member __.FunctionsToDefine = null
         member __.Trigger: FeedbackTrigger = FeedbackTrigger.Success

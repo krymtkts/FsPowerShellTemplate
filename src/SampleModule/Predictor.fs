@@ -14,7 +14,7 @@ type GreetingPredictor(guid: string) =
     let mutable miniSessionId = 0
 
     [<Literal>]
-    let name = "Greeting"
+    let predictorName = "Greeting"
 
     [<Literal>]
     let description = "A predictor that suggests a greeting based on the input."
@@ -25,11 +25,11 @@ type GreetingPredictor(guid: string) =
     [<Literal>]
     let suggestionPart2 = ", PowerShell from F#!'"
 
-    let greetingPattern = Regex($"^{suggestionPart1}(?<removal>.+){suggestionPart2}$")
+    let greetingPattern = $"^{suggestionPart1}(?<removal>.+){suggestionPart2}$" |> Regex
 
     interface ICommandPredictor with
         member __.Id = id
-        member __.Name = name
+        member __.Name = predictorName
         member __.Description = description
 
         member __.GetSuggestion
@@ -48,7 +48,7 @@ type GreetingPredictor(guid: string) =
                             if name.Contains(input, StringComparison.OrdinalIgnoreCase) then
                                 PredictiveSuggestion(
                                     $"{suggestionPart1}{name}{suggestionPart2}",
-                                    "A friendly greeting from F#'"
+                                    "A friendly greeting from F#!"
                                 )
                                 |> Some
                             else
