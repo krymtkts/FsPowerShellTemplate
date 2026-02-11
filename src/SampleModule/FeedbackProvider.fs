@@ -5,7 +5,7 @@ open System.Collections
 open System.Management.Automation.Subsystem.Feedback
 
 type GreetingFeedbackProvider(guid: string) =
-    let id = Guid.Parse(guid)
+    let id = guid |> Guid.Parse
 
     [<Literal>]
     let name = "Greeting"

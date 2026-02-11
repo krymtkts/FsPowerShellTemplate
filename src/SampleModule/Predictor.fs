@@ -6,7 +6,7 @@ open System.Management.Automation.Subsystem.Prediction
 open System.Threading
 
 type GreetingPredictor(guid: string) =
-    let id = Guid.Parse(guid)
+    let id = guid |> Guid.Parse
 
     [<Literal>]
     let name = "Greeting"
