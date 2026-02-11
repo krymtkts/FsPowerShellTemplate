@@ -64,18 +64,26 @@ type GreetingPredictor(guid: string) =
                 SuggestionPackage(session, suggestions)
 
         member __.CanAcceptFeedback(client: PredictionClient, feedback: PredictorFeedbackKind) : bool =
+            DebugLogger.WriteLine $"CanAcceptFeedback: Feedback kind: {feedback}"
+
             // NOTE: to capture events, must be return true for expected feedback kinds.
             feedback = PredictorFeedbackKind.SuggestionAccepted
 
-        member __.OnSuggestionDisplayed(client: PredictionClient, session: uint32, countOrIndex: int) : unit = ()
+        member __.OnSuggestionDisplayed(client: PredictionClient, session: uint32, countOrIndex: int) : unit =
+            DebugLogger.WriteLine $"OnSuggestionDisplayed: Displayed suggestion at index: {countOrIndex}"
 
         member __.OnSuggestionAccepted(client: PredictionClient, session: uint32, acceptedSuggestion: string) : unit =
+            DebugLogger.WriteLine $"OnSuggestionAccepted: Accepted suggestion: {acceptedSuggestion}"
+
             let matches = acceptedSuggestion |> greetingPattern.Match
 
             if matches.Captures.Count = 1 then
                 let removal = matches.Groups.["removal"].Value
                 removal |> greetingStore.Remove
+                DebugLogger.WriteLine $"OnSuggestionAccepted: Removed greeting for: {removal}"
 
-        member __.OnCommandLineAccepted(client: PredictionClient, history: IReadOnlyList<string>) : unit = ()
+        member __.OnCommandLineAccepted(client: PredictionClient, history: IReadOnlyList<string>) : unit =
+            DebugLogger.WriteLine $"OnCommandLineAccepted: Command line history count: {history.Count}"
 
-        member __.OnCommandLineExecuted(client: PredictionClient, commandLine: string, success: bool) : unit = ()
+        member __.OnCommandLineExecuted(client: PredictionClient, commandLine: string, success: bool) : unit =
+            DebugLogger.WriteLine $"OnCommandLineExecuted: Command line: {commandLine}, Success: {success}"

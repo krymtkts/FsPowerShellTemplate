@@ -24,6 +24,8 @@ type GreetingFeedbackProvider(guid: string) =
         member __.Trigger: FeedbackTrigger = FeedbackTrigger.Success
 
         member __.GetFeedback(context: FeedbackContext, token: Threading.CancellationToken) : FeedbackItem | null =
+            DebugLogger.WriteLine "GetFeedback: Checking for feedback provision."
+
             // NOTE: Provide feedback only when there is an update.
             // NOTE: Using the greeting store directly here for simplicity and context does not provide suggestion acceptance status.
             if greetingStore.ConsumeUpdated() then
