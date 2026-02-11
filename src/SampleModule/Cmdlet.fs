@@ -13,6 +13,7 @@ type AddGreetingCommand() =
                 ValueFromPipeline = true,
                 ValueFromPipelineByPropertyName = true,
                 HelpMessage = "Who to greet.")>]
+    [<ValidateNotNullOrWhiteSpace>]
     member val Name = "" with get, set
 
     override __.BeginProcessing() = ()
