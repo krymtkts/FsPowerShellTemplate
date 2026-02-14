@@ -83,19 +83,26 @@ Task Clean Init, {
     }
 }
 
-Task Lint Clean, {
-    # Format check.
-    dotnet tool run fantomas --check (Join-Path $PSScriptRoot 'src')
-    if ($LASTEXITCODE -ne 0) {
-        throw "fantomas check failed with exit code $LASTEXITCODE"
-    }
-}
-
 Task Build Clean, {
     dotnet build -c $Configuration
 
     if ($LASTEXITCODE -ne 0) {
         throw "dotnet build failed with exit code $LASTEXITCODE"
+    }
+}
+
+Task Lint Build, {
+    # F# formatting and analyzers.
+    dnx fantomas --check (Join-Path $PSScriptRoot 'src')
+    if ($LASTEXITCODE -ne 0) {
+        throw "fantomas check failed with exit code $LASTEXITCODE"
+    }
+    $analyzerPath = dotnet build $ModuleSrcPath --getProperty:PkgIonide_Analyzers
+    Get-ChildItem './src/*/*.fsproj' | ForEach-Object {
+        dotnet fsharp-analyzers --project $_ --analyzers-path $analyzerPath --report "analysis/$($_.BaseName)-report.sarif" --code-root src --exclude-files '**/obj/**/*' '**/bin/**/*'
+        if (-not $?) {
+            throw "dotnet fsharp-analyzers for $($_.BaseName) failed."
+        }
     }
 }
 
