@@ -5,6 +5,7 @@
 
 # Build script parameters
 [CmdletBinding()]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification = 'Variables are used in script blocks and argument completers')]
 param(
     [Parameter(Position = 0)]
     [ValidateSet('Init', 'Clean', 'Lint', 'Build', 'Import')]
@@ -16,7 +17,13 @@ param(
 
 # If invoked directly (not dot-sourced by Invoke-Build), hand off execution to Invoke-Build.
 if ($MyInvocation.InvocationName -ne '.') {
-    Invoke-Build -File $PSCommandPath -Task $Tasks @PSBoundParameters
+    $forward = $PSBoundParameters.GetEnumerator() | ForEach-Object -Begin { $acc = @{} } -Process {
+        Write-Host "Processing parameter: ${_}" -ForegroundColor Yellow
+        if ($_.Key -ne 'Tasks') {
+            $acc[$_.Key] = $_.Value
+        }
+    } -End { $acc }
+    Invoke-Build -File $PSCommandPath -Task $Tasks @forward
     exit $LASTEXITCODE
 }
 
@@ -25,11 +32,11 @@ if ($MyInvocation.InvocationName -ne '.') {
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-$ModuleName = Get-ChildItem ./src/*/*.psd1 | Select-Object -ExpandProperty BaseName
-$ModuleSrcPath = Resolve-Path "./src/${ModuleName}/"
+$ModuleName = Get-ChildItem "${PSScriptRoot}/src/*/*.psd1" | Select-Object -First 1 | Select-Object -ExpandProperty BaseName
+$ModuleSrcPath = Resolve-Path "${PSScriptRoot}/src/${ModuleName}/"
 $ModuleSrcProject = Resolve-Path "$ModuleSrcPath/$ModuleName.fsproj"
 $ModuleVersion = ($ModuleSrcProject | Select-Xml '//Version/text()').Node.Value
-$ModulePublishPath = Resolve-Path "./publish/${ModuleName}/"
+$ModulePublishPath = "${PSScriptRoot}/publish/${ModuleName}/"
 $PublishModuleManifest = Join-Path $ModulePublishPath "${ModuleName}.psd1"
 
 Write-Host "Module: ${ModuleName} ver${ModuleVersion} root=${ModuleSrcProject} publish=${ModulePublishPath}" -ForegroundColor Magenta
