@@ -2,4 +2,7 @@
   <Folder Name="/src/">
     <Project Path="src/SampleModule/SampleModule.fsproj" />
   </Folder>
+  <Folder Name="/src/SampleModule.Test/">
+    <Project Path="src/SampleModule.Test/project.fsproj" />
+  </Folder>
 </Solution>
