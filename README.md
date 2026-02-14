@@ -18,7 +18,7 @@ This repository supports two use cases:
 - [ ] Unit tests with [Expecto](https://github.com/haf/expecto) + [FsCheck](https://github.com/fscheck/FsCheck)
 - [ ] End-to-end tests for cmdlets with [Pester](https://github.com/pester/Pester)
 - [ ] Documentation generation with [Microsoft.PowerShell.PlatyPS](https://github.com/PowerShell/platyPS)
-- [ ] Task runner for tests, linter, formatter, documentation and [PowerShell Gallery](https://www.powershellgallery.com/) publishing workflow
+- [x] Task runner for tests, linter, formatter, documentation and [PowerShell Gallery](https://www.powershellgallery.com/) publishing workflow
 
 ## Requirements
 
