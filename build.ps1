@@ -50,7 +50,6 @@ Task Init {
     if ($LASTEXITCODE -ne 0) {
         throw "dotnet restore failed with exit code $LASTEXITCODE"
     }
-
     dotnet tool restore
     if ($LASTEXITCODE -ne 0) {
         throw "dotnet tool restore failed with exit code $LASTEXITCODE"
@@ -65,19 +64,18 @@ Task Clean Init, {
             throw "dotnet clean failed for configuration $_ with exit code $LASTEXITCODE"
         }
     }
-
     'bin', 'obj' | ForEach-Object {
         $path = Join-Path $PSScriptRoot 'src/*' $_
         if (Test-Path $path) {
             Get-ChildItem -Path $path -Recurse | Remove-Item -Force -Recurse
         }
     }
-
+    # Clean debug outputs.
     $debugLog = Join-Path $PSScriptRoot 'debug.log'
     if (Test-Path $debugLog) {
         Remove-Item -Path $debugLog -Force
     }
-
+    # Clean publish outputs.
     if (Test-Path $ModulePublishPath) {
         Remove-Item -Path "${ModulePublishPath}/*" -Force -Recurse
     }
@@ -120,7 +118,6 @@ Task Import Build, {
     if ($LASTEXITCODE -ne 0) {
         throw "dotnet publish failed with exit code $LASTEXITCODE"
     }
-
     if (-not (Test-Path $PublishModuleManifest)) {
         throw "Publish manifest not found at: $PublishModuleManifest"
     }
