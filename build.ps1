@@ -104,6 +104,14 @@ Task Lint Build, {
             throw "dotnet fsharp-analyzers for $($_.BaseName) failed."
         }
     }
+    # PowerShell script analysis.
+    './build.ps1' | ForEach-Object {
+        $warn = Invoke-ScriptAnalyzer -Path $_ -Settings .\PSScriptAnalyzerSettings.psd1
+        if ($warn) {
+            $warn
+            throw "Invoke-ScriptAnalyzer for ${_} failed."
+        }
+    }
 }
 
 Task Import Build, {
