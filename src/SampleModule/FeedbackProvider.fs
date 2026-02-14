@@ -33,8 +33,10 @@ type GreetingFeedbackProvider(guid: string) =
 
                 FeedbackItem(
                     header,
-                    [ $"You have {greetingStore.Count()} greetings stored."
-                      "Thank you for using the Greeting Predictor!" ]
+                    [
+                        $"You have {greetingStore.Count()} greetings stored."
+                        "Thank you for using the Greeting Predictor!"
+                    ]
                     |> Generic.List<string>,
                     "Feedback for the Greeting Predictor",
                     FeedbackDisplayLayout.Portrait
