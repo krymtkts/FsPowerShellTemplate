@@ -36,32 +36,30 @@ type GreetingPredictor(guid: string) =
             (client: PredictionClient, context: PredictionContext, cancellationToken: CancellationToken)
             : SuggestionPackage =
 
-            let suggestions =
-                context.InputAst.Extent.Text
-                |> function
-                    // NOTE: suggestionEntries requires non-empty by Requires.NotNullOrEmpty.
-                    // https://github.com/PowerShell/PowerShell/blob/eef334de1b0f648512859bd032356f9c8df7cb91/src/System.Management.Automation/engine/Subsystem/PredictionSubsystem/ICommandPredictor.cs#L278
-                    | input when input |> String.IsNullOrWhiteSpace -> Seq.empty
-                    | input ->
-                        greetingStore.Get()
-                        |> Seq.choose (fun name ->
-                            if name.Contains(input, StringComparison.OrdinalIgnoreCase) then
-                                PredictiveSuggestion(
-                                    $"{suggestionPart1}{name}{suggestionPart2}",
-                                    "A friendly greeting from F#!"
-                                )
-                                |> Some
-                            else
-                                None)
-                |> Linq.Enumerable.ToList
+            let input = context.InputAst.Extent.Text
 
-            // NOTE: empty suggestionEntries is rejected by PowerShell's internal validation.
-            if suggestions.Count = 0 then
+            if input |> String.IsNullOrWhiteSpace then
                 Unchecked.defaultof<SuggestionPackage>
             else
-                // NOTE: SuggestionPackage must include a mini-session id; PowerShell uses it when calling OnSuggestionDisplayed/OnSuggestionAccepted.
-                let session = Threading.Interlocked.Increment(&miniSessionId) |> uint32
-                SuggestionPackage(session, suggestions)
+                let suggestions =
+                    greetingStore.Get()
+                    |> Seq.choose (fun name ->
+                        if name.Contains(input, StringComparison.OrdinalIgnoreCase) then
+                            PredictiveSuggestion(
+                                $"{suggestionPart1}{name}{suggestionPart2}",
+                                "A friendly greeting from F#!"
+                            )
+                            |> Some
+                        else
+                            None)
+
+                // NOTE: empty suggestionEntries is rejected by PowerShell's internal validation.
+                if Seq.isEmpty suggestions then
+                    Unchecked.defaultof<SuggestionPackage>
+                else
+                    // NOTE: SuggestionPackage must include a mini-session id; PowerShell uses it when calling OnSuggestionDisplayed/OnSuggestionAccepted.
+                    let session = Threading.Interlocked.Increment(&miniSessionId) |> uint32
+                    SuggestionPackage(session, suggestions |> Linq.Enumerable.ToList)
 
         member __.CanAcceptFeedback(client: PredictionClient, feedback: PredictorFeedbackKind) : bool =
             DebugLogger.WriteLine $"CanAcceptFeedback: Feedback kind: {feedback}"
