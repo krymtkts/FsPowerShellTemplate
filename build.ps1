@@ -8,7 +8,7 @@
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification = 'Variables are used in script blocks and argument completers')]
 param(
     [Parameter(Position = 0)]
-    [ValidateSet('Init', 'Clean', 'Lint', 'Build', 'Import')]
+    [ValidateSet('Init', 'Clean', 'Lint', 'Build', 'UnitTest', 'E2ETest', 'Import', 'TestAll')]
     [string[]] $Tasks = @('Build'),
 
     [ValidateSet('Debug', 'Release')]
@@ -112,6 +112,13 @@ Task Lint Build, {
     }
 }
 
+Task UnitTest Lint, {
+    dotnet test --nologo --verbosity detailed --blame-hang-timeout 5s --blame-hang-dump-type full
+    if (-not $?) {
+        throw 'dotnet test failed.'
+    }
+}
+
 Task Import Build, {
     dotnet publish $ModuleSrcProject -c $Configuration -o $ModulePublishPath
 
@@ -125,3 +132,12 @@ Task Import Build, {
     Import-Module -Name $PublishModuleManifest -Force
     Get-Module -Name $ModuleName
 }
+
+Task E2ETest Import, {
+    $result = Invoke-Pester -PassThru
+    if ($result.Failed) {
+        throw 'Invoke-Pester failed.'
+    }
+}
+
+Task TestAll UnitTest, E2ETest
