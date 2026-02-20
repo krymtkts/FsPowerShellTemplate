@@ -8,7 +8,7 @@
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification = 'Variables are used in script blocks and argument completers')]
 param(
     [Parameter(Position = 0)]
-    [ValidateSet('Init', 'Clean', 'Lint', 'Build', 'UnitTest', 'E2ETest', 'Import', 'TestAll')]
+    [ValidateSet('Init', 'Clean', 'Lint', 'Build', 'UnitTest', 'Import', 'E2ETest', 'GenerateHelp', 'TestAll')]
     [string[]] $Tasks = @('Build'),
 
     [ValidateSet('Debug', 'Release')]
@@ -17,6 +17,7 @@ param(
 
 # If invoked directly (not dot-sourced by Invoke-Build), hand off execution to Invoke-Build.
 if ($MyInvocation.InvocationName -ne '.') {
+    $Tasks = $PSBoundParameters['Tasks']
     $forward = $PSBoundParameters.GetEnumerator() | ForEach-Object -Begin { $acc = @{} } -Process {
         Write-Host "Processing parameter: ${_}" -ForegroundColor Yellow
         if ($_.Key -ne 'Tasks') {
@@ -153,9 +154,19 @@ Task E2ETest Import, {
 }
 
 Task GenerateHelp Import, {
-    $help = Get-ValidMarkdownCommentHelp
-    $help.FilePath | Update-MarkdownCommandHelp -NoBackup
-    $help.FilePath | Import-MarkdownCommandHelp | Export-MamlCommandHelp -OutputFolder ./src/ -Force | Out-Null
+    $platyHelp = Get-ValidMarkdownCommentHelp
+    $platyHelp | Format-List
+    try {
+        # Microsoft.PowerShell.PlatyPS 1.0.1  cmdlets do not work with StrictMode enabled; disable it for the duration of this block.
+        # issue: https://github.com/PowerShell/platyPS/issues/800
+        Set-StrictMode -Off
+        Update-MarkdownCommandHelp -Path $platyHelp.FilePath -NoBackup
+        Import-MarkdownCommandHelp -Path $platyHelp.FilePath | Export-MamlCommandHelp -OutputFolder ./src/ -Force | Out-Null
+    }
+    finally {
+        # This script runs with StrictMode Latest by default; restore that behavior.
+        Set-StrictMode -Version Latest
+    }
 }
 
 Task TestAll UnitTest, E2ETest
