@@ -12,7 +12,8 @@ param(
     [string[]] $Tasks = @('Build'),
 
     [ValidateSet('Debug', 'Release')]
-    [string] $Configuration = 'Debug'
+    [string] $Configuration = 'Debug',
+    [switch] $UpdateMarkdown
 )
 
 # If invoked directly (not dot-sourced by Invoke-Build), hand off execution to Invoke-Build.
@@ -155,13 +156,15 @@ Task E2ETest Import, {
 
 Task GenerateHelp Import, {
     $platyHelp = Get-ValidMarkdownCommentHelp
-    $platyHelp | Format-List
     try {
         # Microsoft.PowerShell.PlatyPS 1.0.1  cmdlets do not work with StrictMode enabled; disable it for the duration of this block.
         # issue: https://github.com/PowerShell/platyPS/issues/800
         Set-StrictMode -Off
-        Update-MarkdownCommandHelp -Path $platyHelp.FilePath -NoBackup
-        Import-MarkdownCommandHelp -Path $platyHelp.FilePath | Export-MamlCommandHelp -OutputFolder ./src/ -Force | Out-Null
+        # Regenerating markdown command help sometimes causes unintended modifications.
+        if ($UpdateMarkdown) {
+            $platyHelp.FilePath | Update-MarkdownCommandHelp -NoBackup
+        }
+        $platyHelp.FilePath | Import-MarkdownCommandHelp | Export-MamlCommandHelp -OutputFolder ./src/ -Force | Out-Null
     }
     finally {
         # This script runs with StrictMode Latest by default; restore that behavior.
