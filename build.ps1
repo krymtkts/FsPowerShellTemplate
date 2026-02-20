@@ -42,6 +42,16 @@ $PublishModuleManifest = Join-Path $ModulePublishPath "${ModuleName}.psd1"
 Write-Host "Module: ${ModuleName} ver${ModuleVersion} root=${ModuleSrcProject} publish=${ModulePublishPath}" -ForegroundColor Magenta
 Write-Host "Parameters: $($PSBoundParameters | ConvertTo-Json -Compress)" -ForegroundColor Green
 
+function Get-ValidMarkdownCommentHelp {
+    $help = Measure-PlatyPSMarkdown "./docs/${ModuleName}/*.md" | Where-Object Filetype -Match CommandHelp
+    $validations = $help.FilePath | Test-MarkdownCommandHelp -DetailView
+    if (-not $validations.IsValid) {
+        $validations.Messages | Where-Object { $_ -notlike 'PASS:*' } | Write-Error
+        throw 'Invalid markdown help files.'
+    }
+    $help
+}
+
 # --- Tasks (Invoke-Build) ---
 
 # Synopsis: Initializes the build environment by restoring NuGet packages and .NET tools.
@@ -110,6 +120,8 @@ Task Lint Build, {
             throw "Invoke-ScriptAnalyzer for ${_} failed."
         }
     }
+    # Validate markdown help files.
+    Get-ValidMarkdownCommentHelp | Out-Null
 }
 
 Task UnitTest Lint, {
@@ -138,6 +150,12 @@ Task E2ETest Import, {
     if ($result.Failed) {
         throw 'Invoke-Pester failed.'
     }
+}
+
+Task GenerateHelp Import, {
+    $help = Get-ValidMarkdownCommentHelp
+    $help.FilePath | Update-MarkdownCommandHelp -NoBackup
+    $help.FilePath | Import-MarkdownCommandHelp | Export-MamlCommandHelp -OutputFolder ./src/ -Force | Out-Null
 }
 
 Task TestAll UnitTest, E2ETest
