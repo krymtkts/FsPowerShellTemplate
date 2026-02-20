@@ -29,6 +29,18 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
+
+    <Content Include="SampleModule-Help.xml" Condition="Exists('SampleModule-Help.xml')">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+
   </ItemGroup>
+
+  <Target Name="FailIfHelpMissing"
+          BeforeTargets="Publish"
+          Condition=" '$(Configuration)' == 'Release' AND !Exists('SampleModule-Help.xml') ">
+    <Error Text="SampleModule-Help.xml is missing. Generate MAML help (PlatyPS) before publishing." />
+  </Target>
 
 </Project>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<helpItems xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" schema="maml" xmlns="http://msh">
+  <command:command>
+    <command:details>
+      <command:name>Add-Greeting</command:name>
+      <maml:description>
+        <maml:para>Adds a name to the in-memory greeting store.</maml:para>
+      </maml:description>
+      <command:verb>Add</command:verb>
+      <command:noun>Greeting</command:noun>
+    </command:details>
+    <maml:description>
+      <maml:para>Adds the specified name to a module-wide in-memory store.</maml:para>
+      <maml:para>Other components in this module can read the same store. For example: predictor/feedback provider. The store exists for the lifetime of the current PowerShell session.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Add-Greeting</maml:name>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="0" aliases="none">
+          <maml:name>Name</maml:name>
+          <maml:description>
+            <maml:para>Who to greet.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">System.String</command:parameterValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="0" aliases="none">
+        <maml:name>Name</maml:name>
+        <maml:description>
+          <maml:para>Who to greet.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="true">System.String</command:parameterValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <dev:name>System.String</dev:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You can pipe a string that represents the name to add.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues />
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>The greeting store is in-memory and is not persisted across sessions.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>--------- Example 1 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>```powershell
+Add-Greeting -Name sample
+```</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri>https://github.com/krymtkts/FsPowerShellTemplate/blob/main/docs/FsPowerShellTemplate/SampleModule/Add-Greeting.md</command:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-Greeting</maml:linkText>
+        <command:uri>https://github.com/krymtkts/FsPowerShellTemplate/blob/main/docs/FsPowerShellTemplate/SampleModule/Get-Greeting.md</command:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command>
+    <command:details>
+      <command:name>Get-Greeting</command:name>
+      <maml:description>
+        <maml:para>Gets the names stored in the greeting store.</maml:para>
+      </maml:description>
+      <command:verb>Get</command:verb>
+      <command:noun>Greeting</command:noun>
+    </command:details>
+    <maml:description>
+      <maml:para>Gets a snapshot of names added with `Add-Greeting`.</maml:para>
+      <maml:para>The cmdlet writes each stored name to the pipeline as a string.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-Greeting</maml:name>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters />
+    <command:inputTypes />
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <dev:name>System.String</dev:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Each stored name.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>The greeting store is in-memory and is not persisted across sessions.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>--------- Example 1 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>Gets all stored names.</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>```powershell
+Get-Greeting
+```</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri>https://github.com/krymtkts/FsPowerShellTemplate/blob/main/docs/FsPowerShellTemplate/SampleModule.md</command:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Add-Greeting</maml:linkText>
+        <command:uri>https://github.com/krymtkts/FsPowerShellTemplate/blob/main/docs/FsPowerShellTemplate/SampleModule/Add-Greeting.md</command:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+</helpItems>
