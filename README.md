@@ -15,8 +15,8 @@ This repository supports two use cases:
 - [x] Feedback Provider
 - [x] Shared state across Cmdlet, Command-line predictor and Feedback Provider
 - [x] Linter and formatter with [Fantomas](https://github.com/fsprojects/fantomas) + [FSharp.Analyzers.SDK](https://github.com/ionide/FSharp.Analyzers.SDK)
-- [ ] Unit tests with [Expecto](https://github.com/haf/expecto) + [FsCheck](https://github.com/fscheck/FsCheck)
-- [ ] End-to-end tests for cmdlets with [Pester](https://github.com/pester/Pester)
+- [x] Unit tests with [Expecto](https://github.com/haf/expecto) + [FsCheck](https://github.com/fscheck/FsCheck)
+- [x] End-to-end tests for cmdlets with [Pester](https://github.com/pester/Pester)
 - [ ] Documentation generation with [Microsoft.PowerShell.PlatyPS](https://github.com/PowerShell/platyPS)
 - [x] Task runner for tests, linter, formatter, documentation and [PowerShell Gallery](https://www.powershellgallery.com/) publishing workflow
 
