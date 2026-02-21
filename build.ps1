@@ -8,13 +8,13 @@
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification = 'Variables are used in script blocks and argument completers')]
 param(
     [Parameter(Position = 0)]
-    [ValidateSet('Init', 'Clean', 'Lint', 'Build', 'UnitTest', 'Import', 'E2ETest', 'GenerateHelp', 'TestAll', 'Release')]
+    [ValidateSet('Init', 'Clean', 'Lint', 'Build', 'UnitTest', 'Stage', 'Import', 'E2ETest', 'GenerateHelp', 'TestAll', 'Release')]
     [string[]] $Tasks = @('Build'),
 
     [ValidateSet('Debug', 'Release')]
     [string] $Configuration = 'Debug',
     [switch] $UpdateMarkdown,
-    [switch] $Publish
+    [switch] $PushToGallery
 )
 
 # If invoked directly (not dot-sourced by Invoke-Build), hand off execution to Invoke-Build.
@@ -28,6 +28,14 @@ if ($MyInvocation.InvocationName -ne '.') {
     } -End { $acc }
     Invoke-Build -File $PSCommandPath -Task $Tasks @forward
     exit $LASTEXITCODE
+}
+
+# Task-scoped switch validation.
+if ($UpdateMarkdown -and ($Tasks -notcontains 'GenerateHelp')) {
+    throw "-UpdateMarkdown is only valid when -Tasks includes 'GenerateHelp'. Current Tasks: $($Tasks -join ', ')"
+}
+if ($PushToGallery -and ($Tasks -notcontains 'Release')) {
+    throw "-PushToGallery is only valid when -Tasks includes 'Release'. Current Tasks: $($Tasks -join ', ')"
 }
 
 # --- Setup ---
@@ -145,7 +153,7 @@ Task UnitTest Lint, {
     }
 }
 
-Task Import Build, {
+Task Stage Build, {
     dotnet publish $ModuleSrcProject -c $Configuration -o $ModulePublishPath
     if ($LASTEXITCODE -ne 0) {
         throw "dotnet publish failed with exit code $LASTEXITCODE"
@@ -154,6 +162,9 @@ Task Import Build, {
         throw "Publish manifest not found at: $PublishModuleManifest"
     }
     Test-ModuleManifest -Path $PublishModuleManifest -ErrorAction Stop
+}
+
+Task Import Stage, {
     Import-Module -Name $PublishModuleManifest -Force
     Get-Module -Name $ModuleName
 }
@@ -186,7 +197,7 @@ Task GenerateHelp Import, {
 Task TestAll UnitTest, E2ETest
 
 Task Release TestAll, {
-    Write-Host "Release ${ModuleName}! version=${ModuleVersion} dryrun=$(-not $Publish)" -ForegroundColor Magenta
+    Write-Host "Release ${ModuleName}! version=${ModuleVersion} dryrun=$(-not $PushToGallery)" -ForegroundColor Magenta
 
     $module = Import-PowerShellDataFile $PublishModuleManifest
     $ManifestModuleVersion = $module | Get-FullModuleVersion
@@ -198,7 +209,7 @@ Task Release TestAll, {
         Path = $ModulePublishPath
         Repository = 'PSGallery'
         ApiKey = (Get-Credential API-key -Message 'Enter your API key as the password').GetNetworkCredential().Password
-        WhatIf = -not $Publish
+        WhatIf = -not $PushToGallery
         Verbose = $true
     }
     Publish-PSResource @Params
