@@ -1,0 +1,32 @@
+name: Test main
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  test:
+    strategy:
+      # NOTE: Disable fail-fast to ensure tests run on all platforms.
+      fail-fast: false
+      matrix:
+        os:
+          - windows-latest
+          - ubuntu-latest
+          - macos-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Test
+        uses: ./.github/actions/test
+        with:
+          codecov_token: ${{ secrets.CODECOV_TOKEN }}
+          sarif_main_file: analysis/SampleModule-report.sarif
+          sarif_test_file: analysis/SampleModule.Test-report.sarif

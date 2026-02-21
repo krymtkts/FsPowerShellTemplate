@@ -1,0 +1,58 @@
+name: Test
+description: Setup .NET, install PowerShell modules and run all tests.
+
+inputs:
+  codecov_token:
+    description: "Codecov token"
+    required: false
+    default: ""
+  sarif_main_file:
+    description: "SARIF file path for main project (empty = skip upload)"
+    required: false
+    default: ""
+  sarif_test_file:
+    description: "SARIF file path for test project (empty = skip upload)"
+    required: false
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v5
+      with:
+        global-json-file: ./global.json
+    - name: Install modules from PSGallery
+      shell: pwsh
+      run: |
+        Set-PSResourceRepository PSGallery -Trusted
+        Install-PSResource InvokeBuild, Pester, PSScriptAnalyzer -Quiet -Reinstall -Scope CurrentUser
+        Install-PSResource Microsoft.PowerShell.PlatyPS -Prerelease -Quiet -Reinstall -Scope CurrentUser
+    - name: Test release build
+      shell: pwsh
+      run: |
+        ./build.ps1 -Tasks Build -Configuration Release
+    - name: Execute All Tests
+      shell: pwsh
+      run: |
+        ./build.ps1 -Tasks TestAll
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v5
+      if: runner.os == 'Linux' && inputs.codecov_token != ''
+      with:
+        files: ./coverage.cobertura.xml
+      env:
+        CODECOV_TOKEN: ${{ inputs.codecov_token }}
+    # separate multiple SARIF uploads to add categories. see https://github.blog/changelog/2024-05-06-code-scanning-will-stop-combining-runs-from-a-single-upload/
+    - name: Upload SARIF file for main project
+      uses: github/codeql-action/upload-sarif@v4
+      if: runner.os == 'Linux' && inputs.sarif_main_file != ''
+      with:
+        sarif_file: ${{ inputs.sarif_main_file }}
+        category: Main
+    - name: Upload SARIF file for test project
+      uses: github/codeql-action/upload-sarif@v4
+      if: runner.os == 'Linux' && inputs.sarif_test_file != ''
+      with:
+        sarif_file: ${{ inputs.sarif_test_file }}
+        category: Test
