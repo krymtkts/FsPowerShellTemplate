@@ -1,0 +1,45 @@
+version: 2
+updates:
+  # Maintain dependencies for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directories:
+      - "/"
+      - "/.github/actions/*"
+    schedule:
+      interval: "weekly"
+    groups:
+      workflow:
+        patterns:
+          - "*"
+  # Maintain dependencies for NuGet
+  - package-ecosystem: "nuget"
+    directories:
+      - "/"
+      - "/.config"
+    schedule:
+      interval: "weekly"
+    groups:
+      dotnet-tools:
+        patterns:
+          - "fantomas"
+          - "fsharp-analyzers"
+          - "Ionide.Analyzers"
+      fsharp:
+        patterns:
+          - "FSharp.Core"
+      powershell-sdk:
+        patterns:
+          - "Microsoft.PowerShell.SDK"
+        update-types:
+          - "patch"
+      test:
+        patterns:
+          - "Expecto"
+          - "YoloDev.Expecto.TestSdk"
+          - "FsCheck"
+          - "Expecto.FsCheck"
+    ignore:
+      - dependency-name: "Microsoft.PowerShell.SDK"
+        update-types:
+          - "version-update:semver-major"
+          - "version-update:semver-minor"
