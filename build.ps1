@@ -19,7 +19,7 @@ param(
 
 # If invoked directly (not dot-sourced by Invoke-Build), hand off execution to Invoke-Build.
 if ($MyInvocation.InvocationName -ne '.') {
-    $Tasks = $PSBoundParameters['Tasks']
+    $Tasks = $PSBoundParameters['Tasks'] ?? $Tasks
     $forward = $PSBoundParameters.GetEnumerator() | ForEach-Object -Begin { $acc = @{} } -Process {
         Write-Host "Processing parameter: ${_}" -ForegroundColor Yellow
         if ($_.Key -ne 'Tasks') {
@@ -203,3 +203,5 @@ Task Release TestAll, {
     }
     Publish-PSResource @Params
 }
+
+Task . Build
