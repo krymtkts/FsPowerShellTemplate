@@ -1,0 +1,10 @@
+# .github/CODEOWNERS.example
+# Rename to CODEOWNERS and edit owners for your org/repo.
+# See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Example:
+# * @you
+
+# More granular examples:
+# /src/  @you
+# /docs/ @you
