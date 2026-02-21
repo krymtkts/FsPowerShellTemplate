@@ -3,6 +3,6 @@
     <Project Path="src/SampleModule/SampleModule.fsproj" />
   </Folder>
   <Folder Name="/src/SampleModule.Test/">
-    <Project Path="src/SampleModule.Test/project.fsproj" />
+    <Project Path="src/SampleModule.Test/SampleModule.Test.fsproj" />
   </Folder>
 </Solution>
