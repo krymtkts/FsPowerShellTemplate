@@ -123,12 +123,12 @@ Task Build Clean, {
 
 Task Lint Build, {
     # F# formatting and analyzers.
-    dnx fantomas --check (Join-Path $PSScriptRoot 'src')
+    dnx fantomas --check "${PSScriptRoot}/src"
     if ($LASTEXITCODE -ne 0) {
         throw "fantomas check failed with exit code $LASTEXITCODE"
     }
     $analyzerPath = dotnet build $ModuleSrcPath --getProperty:PkgIonide_Analyzers
-    Get-ChildItem './src/*/*.fsproj' | ForEach-Object {
+    Get-ChildItem "${PSScriptRoot}/src/*/*.fsproj" | ForEach-Object {
         dotnet fsharp-analyzers --project $_ --analyzers-path $analyzerPath --report "analysis/$($_.BaseName)-report.sarif" --code-root src --exclude-files '**/obj/**/*' '**/bin/**/*'
         if (-not $?) {
             throw "dotnet fsharp-analyzers for $($_.BaseName) failed."
