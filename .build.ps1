@@ -138,7 +138,7 @@ Task Lint Build, {
         }
     }
     # PowerShell script analysis.
-    './build.ps1' | ForEach-Object {
+    './.build.ps1' | ForEach-Object {
         $warn = Invoke-ScriptAnalyzer -Path $_ -Settings .\PSScriptAnalyzerSettings.psd1
         if ($warn) {
             $warn
