@@ -31,11 +31,11 @@ runs:
     - name: Test release build
       shell: pwsh
       run: |
-        Invoke-Build -Tasks Build -Configuration Release
+        Invoke-Build -Task Build -Configuration Release
     - name: Execute All Tests
       shell: pwsh
       run: |
-        Invoke-Build -Tasks TestAll
+        Invoke-Build -Task TestAll
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v5
       if: runner.os == 'Linux' && inputs.codecov_token != ''
