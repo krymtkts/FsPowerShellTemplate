@@ -37,7 +37,10 @@ if ($UpdateMarkdown -and ($Tasks -notcontains 'GenerateHelp')) {
 if ($PushToGallery -and ($Tasks -notcontains 'Release')) {
     throw "-PushToGallery is only valid when -Tasks includes 'Release'. Current Tasks: $($Tasks -join ', ')"
 }
-
+# Template requirement: PowerShell (pwsh) only. Windows PowerShell 5.1 is unsupported.
+if ($PSVersionTable.PSVersion -lt [Version]'7.4') {
+    throw "This build requires PowerShell 7.4+. Current: $($PSVersionTable.PSVersion). Use 'pwsh' and retry."
+}
 # --- Setup ---
 
 Set-StrictMode -Version Latest
