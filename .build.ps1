@@ -41,6 +41,18 @@ if ($PushToGallery -and ($Tasks -notcontains 'Release')) {
 if ($PSVersionTable.PSVersion -lt [Version]'7.4') {
     throw "This build requires PowerShell 7.4+. Current: $($PSVersionTable.PSVersion). Use 'pwsh' and retry."
 }
+# Required dependencies validation (fail fast).
+'Microsoft.PowerShell.PSResourceGet', 'InvokeBuild', 'Pester', 'PSScriptAnalyzer', 'Microsoft.PowerShell.PlatyPS' | ForEach-Object {
+    if (-not (Get-Module -ListAvailable -Name $_ -ErrorAction SilentlyContinue)) {
+        $installCommand = $_ -eq 'Microsoft.PowerShell.PSResourceGet' ? "Install-Module $_" : "Install-PSResource $_"
+        throw @"
+${_} is required.
+
+Install then retry(sample command is CurrentUser scope to avoid requiring admin privileges):
+  $installCommand
+"@
+    }
+}
 # --- Setup ---
 
 Set-StrictMode -Version Latest
