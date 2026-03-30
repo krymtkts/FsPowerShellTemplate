@@ -37,7 +37,7 @@ runs:
       run: |
         Invoke-Build -Task TestAll
     - name: Upload coverage reports to Codecov
-      uses: codecov/codecov-action@v5
+      uses: codecov/codecov-action@v6
       if: runner.os == 'Linux' && inputs.codecov_token != ''
       with:
         files: ./coverage.cobertura.xml
