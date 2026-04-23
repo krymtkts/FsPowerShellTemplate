@@ -5,7 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- NOTE: F# dependencies. -->
-    <PackageVersion Include="FSharp.Core" Version="10.1.201" />
+    <PackageVersion Include="FSharp.Core" Version="10.1.203" />
     <!-- NOTE: PowerShell dependencies. Feedback Provider requires PowerShell SDK version 7.4.x. -->
     <PackageVersion Include="Microsoft.PowerShell.SDK" Version="7.4.14" />
     <!-- NOTE: to address security vulnerabilities. -->
