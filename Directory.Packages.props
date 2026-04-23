@@ -8,6 +8,8 @@
     <PackageVersion Include="FSharp.Core" Version="10.1.201" />
     <!-- NOTE: PowerShell dependencies. Feedback Provider requires PowerShell SDK version 7.4.x. -->
     <PackageVersion Include="Microsoft.PowerShell.SDK" Version="7.4.14" />
+    <!-- NOTE: to address security vulnerabilities. -->
+    <PackageVersion Include="System.Security.Cryptography.Xml" Version="8.0.3" />
     <!-- NOTE: Analyzer dependencies. -->
     <PackageVersion Include="Ionide.Analyzers" Version="0.15.0" />
     <!-- NOTE: Test dependencies. -->
