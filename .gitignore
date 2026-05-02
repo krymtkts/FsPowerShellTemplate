@@ -429,3 +429,6 @@ FodyWeavers.xsd
 
 # Ionide FSharp.Analyzers.SDK sarif output
 *.sarif
+
+# pslrm local modules
+.pslrm/
