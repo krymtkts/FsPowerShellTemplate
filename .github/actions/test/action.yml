@@ -26,16 +26,16 @@ runs:
       shell: pwsh
       run: |
         Set-PSResourceRepository PSGallery -Trusted
-        Install-PSResource InvokeBuild, Pester, PSScriptAnalyzer -Quiet -Reinstall -Scope CurrentUser
-        Install-PSResource Microsoft.PowerShell.PlatyPS -Prerelease -Quiet -Reinstall -Scope CurrentUser
+        Install-PSResource pslrm -Prerelease -Quiet -Reinstall -Scope CurrentUser
+        Restore-PSLResource
     - name: Test release build
       shell: pwsh
       run: |
-        Invoke-Build -Task Build -Configuration Release
+        Invoke-PSLResource -CommandName 'Invoke-Build' -ArgumentTokens '-Task','Build','-Configuration','Release'
     - name: Execute All Tests
       shell: pwsh
       run: |
-        Invoke-Build -Task TestAll
+        Invoke-PSLResource -CommandName 'Invoke-Build' -ArgumentTokens '-Task','TestAll'
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v6
       if: runner.os == 'Linux' && inputs.codecov_token != ''
