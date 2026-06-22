@@ -13,9 +13,9 @@
     <!-- NOTE: Analyzer dependencies. -->
     <PackageVersion Include="Ionide.Analyzers" Version="0.15.0" />
     <!-- NOTE: Test dependencies. -->
-    <PackageVersion Include="Expecto" Version="11.0.0-alpha9" />
+    <PackageVersion Include="Expecto" Version="11.1.0" />
     <PackageVersion Include="YoloDev.Expecto.TestSdk" Version="0.15.6" />
     <PackageVersion Include="FsCheck" Version="3.3.3" />
-    <PackageVersion Include="Expecto.FsCheck" Version="11.0.0-alpha9" />
+    <PackageVersion Include="Expecto.FsCheck" Version="11.1.0" />
   </ItemGroup>
 </Project>
