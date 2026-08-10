@@ -5,17 +5,15 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- NOTE: F# dependencies. -->
-    <PackageVersion Include="FSharp.Core" Version="10.1.301" />
+    <PackageVersion Include="FSharp.Core" Version="10.1.302" />
     <!-- NOTE: PowerShell dependencies. Feedback Provider requires PowerShell SDK version 7.4.x. -->
-    <PackageVersion Include="Microsoft.PowerShell.SDK" Version="7.4.16" />
-    <!-- NOTE: to address security vulnerabilities. -->
-    <PackageVersion Include="System.Security.Cryptography.Xml" Version="8.0.3" />
+    <PackageVersion Include="Microsoft.PowerShell.SDK" Version="7.4.18" />
     <!-- NOTE: Analyzer dependencies. -->
     <PackageVersion Include="Ionide.Analyzers" Version="0.15.0" />
     <!-- NOTE: Test dependencies. -->
-    <PackageVersion Include="Expecto" Version="11.0.0-alpha9" />
-    <PackageVersion Include="YoloDev.Expecto.TestSdk" Version="0.15.6" />
-    <PackageVersion Include="FsCheck" Version="3.3.3" />
-    <PackageVersion Include="Expecto.FsCheck" Version="11.0.0-alpha9" />
+    <PackageVersion Include="Expecto" Version="11.1.0" />
+    <PackageVersion Include="YoloDev.Expecto.TestSdk" Version="0.16.0" />
+    <PackageVersion Include="FsCheck" Version="3.3.4" />
+    <PackageVersion Include="Expecto.FsCheck" Version="11.1.0" />
   </ItemGroup>
 </Project>
