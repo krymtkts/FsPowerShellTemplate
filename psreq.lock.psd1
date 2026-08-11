@@ -5,7 +5,7 @@
     }
     'Microsoft.PowerShell.PlatyPS' = @{
         'Repository' = 'PSGallery'
-        'Version' = '1.0.1'
+        'Version' = '1.0.3'
     }
     'PSScriptAnalyzer' = @{
         'Repository' = 'PSGallery'
@@ -13,6 +13,6 @@
     }
     'Pester' = @{
         'Repository' = 'PSGallery'
-        'Version' = '5.7.1'
+        'Version' = '6.0.1'
     }
 }
