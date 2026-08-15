@@ -9,7 +9,7 @@
     <!-- NOTE: PowerShell dependencies. Feedback Provider requires PowerShell SDK version 7.4.x. -->
     <PackageVersion Include="Microsoft.PowerShell.SDK" Version="7.4.18" />
     <!-- NOTE: Analyzer dependencies. -->
-    <PackageVersion Include="Ionide.Analyzers" Version="0.15.0" />
+    <PackageVersion Include="Ionide.Analyzers" Version="0.16.0" />
     <!-- NOTE: Test dependencies. -->
     <PackageVersion Include="Expecto" Version="11.1.0" />
     <PackageVersion Include="YoloDev.Expecto.TestSdk" Version="0.16.0" />
