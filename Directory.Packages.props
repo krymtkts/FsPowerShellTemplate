@@ -7,7 +7,7 @@
     <!-- NOTE: F# dependencies. -->
     <PackageVersion Include="FSharp.Core" Version="10.1.400" />
     <!-- NOTE: PowerShell dependencies. Feedback Provider requires PowerShell SDK version 7.4.x. -->
-    <PackageVersion Include="Microsoft.PowerShell.SDK" Version="7.4.18" />
+    <PackageVersion Include="Microsoft.PowerShell.SDK" Version="7.4.19" />
     <!-- NOTE: Analyzer dependencies. -->
     <PackageVersion Include="Ionide.Analyzers" Version="0.16.0" />
     <!-- NOTE: Test dependencies. -->
