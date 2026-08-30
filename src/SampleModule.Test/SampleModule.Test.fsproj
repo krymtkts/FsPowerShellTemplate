@@ -9,7 +9,6 @@
     <EnableExpectoTestingPlatformIntegration>true</EnableExpectoTestingPlatformIntegration>
     <OutputType>Exe</OutputType>
     <GenerateProgramFile>false</GenerateProgramFile>
-    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
 
     <!-- NOTE: For output to console. -->
     <TestingPlatformCaptureOutput>false</TestingPlatformCaptureOutput>
@@ -21,6 +20,7 @@
     <PackageReference Include="FsCheck" />
     <PackageReference Include="YoloDev.Expecto.TestSdk" />
     <PackageReference Include="Microsoft.Testing.Extensions.HangDump" />
+    <PackageReference Include="Microsoft.Testing.Extensions.GitHubActionsReport" />
   </ItemGroup>
 
   <ItemGroup>
