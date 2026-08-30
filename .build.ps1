@@ -162,7 +162,7 @@ Task Lint Build, {
 }
 
 Task UnitTest Lint, {
-    dotnet test --verbosity detailed --hangdump --hangdump-timeout 5s --hangdump-type full
+    dotnet test --verbosity detailed --hangdump --hangdump-timeout 5s --hangdump-type full --report-gh
     if (-not $?) {
         throw 'dotnet test failed.'
     }
