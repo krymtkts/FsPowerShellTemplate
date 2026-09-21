@@ -138,7 +138,7 @@ Task Build Clean, {
 
 Task Lint Build, {
     # F# formatting and analyzers.
-    dnx fantomas --check "${PSScriptRoot}/src"
+    dnx fantomas check "${PSScriptRoot}/src"
     if ($LASTEXITCODE -ne 0) {
         throw "fantomas check failed with exit code $LASTEXITCODE"
     }
