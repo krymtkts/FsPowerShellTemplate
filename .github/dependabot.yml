@@ -22,6 +22,8 @@ updates:
       dotnet-tools:
         patterns:
           - "fantomas"
+      fsharp-analyzers:
+        patterns:
           - "fsharp-analyzers"
           - "Ionide.Analyzers"
       fsharp:
